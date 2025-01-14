@@ -234,6 +234,7 @@ class AccountPaymentTerm(models.Model):
         # FIXME: Find an inheritable way of doing this
         self.ensure_one()
         company_currency = company.currency_id
+        foreign_currency = company_currency != currency
         tax_amount_left = tax_amount
         tax_amount_currency_left = tax_amount_currency
         untaxed_amount_left = untaxed_amount
@@ -243,6 +244,8 @@ class AccountPaymentTerm(models.Model):
         total_amount_currency = remaining_amount_currency = (
             tax_amount_currency + untaxed_amount_currency
         )
+        if foreign_currency:
+            total_amount, total_amount_currency = total_amount_currency, total_amount
         result = []
         precision_digits = currency.decimal_places
         company_precision_digits = company_currency.decimal_places
